@@ -1,0 +1,18 @@
+[dependencies]
+core = "2.0.0"
+star = "0.1.1"
+class-plus = "0.2.0"
+
+[dev-dependencies]
+test = "2.0.0"
+fuzz = "0.2.1"
+
+[package]
+name = "timer-tool"
+version = "0.2.0"
+description = "manage and recover timers in motoko"
+repository = "https://github.com/icdevsorg/timerTool"
+keywords = [ "timers" ]
+
+[toolchain]
+moc = "1.1.0"

@@ -1,0 +1,47 @@
+type ShareCycleError = 
+ variant {
+   CustomError: record {
+                  code: nat;
+                  message: text;
+                };
+   NotEnoughCycles: record {
+                      nat;
+                      nat;
+                    };
+ };
+type ShareArgs = 
+ vec record {
+       namespace: text;
+       share: nat;
+     };
+type DepositResult = 
+ record {
+   balance: nat;
+   block_index: BlockIndex;
+ };
+type Collector = 
+ service {
+   getCyclesBalance: () -> (nat) query;
+   getDepositCount: () -> (nat) query;
+   getLastDeposit: () -> (record {
+                            amount: nat;
+                            namespace: text;
+                          }) query;
+   getTotalCyclesReceived: () -> (nat) query;
+   /// * Lets the NFT accept cycles.
+   ///     * @returns {Nat} - The amount of cycles accepted.
+   icrc85_deposit_cycles: (request: ShareArgs) ->
+    (variant {
+       Err: ShareCycleError;
+       Ok: nat;
+     });
+   /// * Lets the NFT accept cycles.
+   ///     * @returns {Nat} - The amount of cycles accepted.
+   icrc85_deposit_cycles_notify: (request: vec record {
+                                                 text;
+                                                 nat;
+                                               }) -> () oneway;
+   wallet_withdraw: (amount: nat, owner: opt principal) -> (DepositResult);
+ };
+type BlockIndex = nat;
+service : () -> Collector

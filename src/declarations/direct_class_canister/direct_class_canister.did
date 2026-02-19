@@ -1,0 +1,70 @@
+type TimerId = nat;
+type Time = nat;
+type Stats = 
+ record {
+   cycles: nat;
+   expectedExecutionTime: opt Time;
+   lastExecutionTime: Time;
+   maxExecutions: nat;
+   minAction: opt ActionDetail;
+   nextActionId: nat;
+   nextTimer: opt TimerId;
+   timers: nat;
+ };
+type DirectClassCanister = 
+ service {
+   /// Add an async action
+   addAsyncAction: (time: nat, actionType: text, paramsNat: opt nat, timeout:
+    nat) -> (ActionId);
+   /// Add a sync action
+   addSyncAction: (time: nat, actionType: text, paramsNat: opt nat) ->
+    (ActionId);
+   /// Cancel an action
+   cancelAction: (actionId: nat) -> (opt nat);
+   /// Get counter value
+   getCounter: () -> (nat) query;
+   /// Get error count
+   getErrorCount: () -> (nat) query;
+   /// Get executed action count
+   getExecutedCount: () -> (nat) query;
+   /// Get execution history
+   getExecutionHistory: () -> (vec record {
+                                     nat;
+                                     text;
+                                     nat;
+                                   }) query;
+   /// Get last executed namespace
+   getLastExecuted: () -> (text, blob) query;
+   /// Get timer stats
+   getStats: () -> (Stats) query;
+   /// Get current time in nanoseconds
+   getTime: () -> (nat) query;
+   /// Force initialization (for testing)
+   initialize: () -> ();
+   /// Reset test state
+   resetTestState: () -> ();
+   /// Set counter value (for testing)
+   setCounter: (val: nat) -> ();
+ };
+type ActionId = 
+ record {
+   id: nat;
+   time: Time;
+ };
+type ActionDetail = 
+ record {
+   ActionId;
+   Action;
+ };
+type Action = 
+ record {
+   aSync: opt nat;
+   actionType: text;
+   params: blob;
+   retries: nat;
+ };
+/// DirectClassCanister - Example canister using direct TT.Init() pattern
+/// 
+/// This canister demonstrates direct usage of TimerTool without mixin,
+/// following the same pattern as the main test canister.
+service : () -> DirectClassCanister

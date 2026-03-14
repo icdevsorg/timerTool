@@ -1,3 +1,9 @@
+
+#v0.2.1
+
+- updated to core 2.1.0
+- updated to moc 1.3.0
+
 #v0.2.0
 
 - breaking changes!

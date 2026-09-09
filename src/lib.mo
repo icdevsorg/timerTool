@@ -78,7 +78,7 @@ module {
   public type InitArgs =              MigrationTypes.Args;
   public type InitArgList =           MigrationTypes.ArgList;
   public func initialState() : State {#v0_0_0(#data)};
-  public let currentStateVersion = #v0_1_0(#id);
+  public let currentStateVersion = #v0_2_0(#id);
   public let Migration = MigrationLib;
 
   public let init = Migration.migrate;
@@ -190,7 +190,7 @@ module {
       /// Initializes the ledger state with either a new state or a given state for migration. 
       /// This setup process involves internal data migration routines.
       var state : CurrentState = do {
-        let #v0_1_0(#data(foundState)) = init(
+        let #v0_2_0(#data(foundState)) = init(
           switch(stored){
             case(null) initialState();
             case(?val) val;
@@ -198,7 +198,7 @@ module {
         foundState;
       };
 
-      storageChanged(#v0_1_0(#data(state)));
+      storageChanged(#v0_2_0(#data(state)));
 
       private let executionListeners = Map.empty<Text, ExecutionItem>();
 

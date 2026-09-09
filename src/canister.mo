@@ -41,7 +41,7 @@ shared (deployer) persistent actor class TimerTool<system>(args : TT.Args)  = th
   };
 
   var currentCount = 0 : Nat;
-  //stable let timerState = TT.init(TT.initialState(),#v0_1_0(#id), args, deployer.caller);
+  //stable let timerState = TT.init(TT.initialState(),#v0_2_0(#id), args, deployer.caller);
 
   //D.print("base state " # debug_show(timerState));
 
@@ -122,7 +122,7 @@ shared (deployer) persistent actor class TimerTool<system>(args : TT.Args)  = th
 
 
   private func _getState() : TT.CurrentState {
-    let #v0_1_0(#data(val)) = tt_migration_state else Runtime.trap("state not init");
+    let #v0_2_0(#data(val)) = tt_migration_state else Runtime.trap("state not init");
     val;
   };
 

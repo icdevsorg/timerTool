@@ -2,6 +2,8 @@
 core = "2.1.0"
 star = "0.1.1"
 class-plus = "0.2.1"
+map = "9.0.1"
+stableheapbtreemap = "1.5.0"
 
 [dev-dependencies]
 test = "2.1.2"
@@ -9,7 +11,7 @@ fuzz = "1.0.0"
 
 [package]
 name = "timer-tool"
-version = "0.2.1"
+version = "0.2.2"
 description = "manage and recover timers in motoko"
 repository = "https://github.com/icdevsorg/timerTool"
 keywords = [ "timers" ]

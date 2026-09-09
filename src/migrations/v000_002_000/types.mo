@@ -5,29 +5,24 @@
 // use MigrationTypes.Current property instead
 
 
-import BTreeLib "mo:stableheapbtreemap/BTree";
-import StarLib "mo:star/star";
-import MapLib "mo:map/Map";
-import Map "mo:map/Map";
+import Map "mo:core/Map";
+import List "mo:core/List";
+import Iter "mo:core/Iter";
+import Star "mo:star/star";
 
 import Blob "mo:core/Blob";
-import D "mo:core/Debug";
+import Debug "mo:core/Debug";
 import Order "mo:core/Order";
 import Nat "mo:core/Nat";
 import Result "mo:core/Result";
 import Text "mo:core/Text";
 
 
-// ⚠️ THIS IS THE 0.1.x STATE LAYOUT AND MUST NOT CHANGE. timer-tool 0.2.0/0.2.1 rewrote this
-// file in place to mo:core containers, which made every canister holding a 0.1.x state
-// un-upgradeable (M0170: the previous `#v0_1_0` is not a subtype of the new one). The core
-// layout now lives in v000_002_000, and v0_2_0.upgrade converts from this one.
 module {
 
-  public let BTree = BTreeLib;
-  public let Star = StarLib;
-  public let Map = MapLib;
-
+  // No custom modules for BTree/Map needed anymore.
+  // Consumers now use mo:core/Map directly.
+  
   public type TimerId = Nat;
   public type Time = Nat;
   public type ActionId = {
@@ -47,7 +42,7 @@ module {
     params: Blob;
   };
 
-  public type TimeTree = BTree.BTree<ActionId, Action>;
+  public type TimeTree = Map.Map<ActionId, Action>;
 
   public func ActionIdCompare(a: ActionId, b: ActionId) : Order.Order {
     if (a.time == b.time) {
@@ -77,11 +72,11 @@ module {
     error: Error
   };
 
-  public type Map = [(Text, Value)];
+  public type JsonMap = [(Text, Value)];
 
   public type Value = {
     #Int : Int;
-    #Map : Map;
+    #Map : JsonMap;
     #Nat : Nat;
     #Blob : Blob;
     #Text : Text;
@@ -100,8 +95,9 @@ module {
     advanced: ?{
       icrc85 : ?{
         kill_switch: ?Bool;
-        handler: ?(([(Text, Map)]) -> ());
+        handler: ?(([(Text, JsonMap)]) -> ());
         period: ?Nat;
+        initialWait: ?Nat;  // Initial wait before first share (default: 7 days)
         asset: ?Text;
         platform: ?Text;
         tree: ?[Text];

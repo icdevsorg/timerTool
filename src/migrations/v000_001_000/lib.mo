@@ -2,16 +2,15 @@ import MigrationTypes "../types";
 import Array "mo:core/Array";
 import v0_1_0 "types";
 import Nat "mo:core/Nat";
-import Debug "mo:core/Debug";
-import Map "mo:core/Map";
-import Iter "mo:core/Iter";
+import D "mo:core/Debug";
 
 module {
 
-  public func upgrade(_prevmigration_state: MigrationTypes.State, args: MigrationTypes.Args, _caller: Principal, _canister : Principal): MigrationTypes.State {
+  public func upgrade(prevmigration_state: MigrationTypes.State, args: MigrationTypes.Args, caller: Principal, canister : Principal): MigrationTypes.State {
 
-    Debug.print("in upgrade " # debug_show(args));
+    D.print("in upgrade " # debug_show(args));
 
+    
     let (
       timeTree : v0_1_0.TimeTree,
       actionIdIndex,
@@ -25,8 +24,8 @@ module {
     ) = switch(args){
       case(null){
         (
-          Map.empty<v0_1_0.ActionId, v0_1_0.Action>(), 
-          Map.empty<Nat, Nat>(),
+          v0_1_0.BTree.init<v0_1_0.ActionId, v0_1_0.Action>(?32), 
+          v0_1_0.Map.new<Nat, v0_1_0.Time>(),
           0, 
           0,
           0,
@@ -37,8 +36,8 @@ module {
       };
       case(?val){
         (
-          Map.fromIter<v0_1_0.ActionId, v0_1_0.Action>(val.initialTimers.vals(), v0_1_0.ActionIdCompare),
-          Map.fromIter<Nat, Nat>(Array.map<(v0_1_0.ActionId, v0_1_0.Action), (Nat, Nat)>(val.initialTimers, func(x: (v0_1_0.ActionId, v0_1_0.Action)) : (Nat, Nat){(x.0.id, x.0.time)}).vals(), Nat.compare),
+          v0_1_0.BTree.fromArray<v0_1_0.ActionId, v0_1_0.Action>(32, v0_1_0.ActionIdCompare, val.initialTimers),
+          v0_1_0.Map.fromIter<Nat, v0_1_0.Time>(Array.map<(v0_1_0.ActionId, v0_1_0.Action), (Nat, Nat)>(val.initialTimers, func(x: (v0_1_0.ActionId, v0_1_0.Action)) : (Nat, Nat){(x.0.id, x.0.time)}).vals(), v0_1_0.Map.nhash),
           val.lastExecutionTime,
           val.expectedExecutionTime,
           val.nextActionId,
@@ -52,7 +51,6 @@ module {
         )
       };
     };
-
 
     let state : v0_1_0.State = {
       timeTree : v0_1_0.TimeTree = timeTree;
